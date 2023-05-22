@@ -1,38 +1,45 @@
 import java.util.Scanner;
-class zapalanie {
-    public static int[] ileBitow(int a){
-        int n = 1;
-        int currPot = 0;
-        while(2 * n <= a) {
-            n *= 2;
-            currPot++;
+public class Main {
+    public static int rozwiazanie(int [] tablica) {
+        int n = tablica.length;
+        int najwyzszyPunkt = tablica[0];
+        int najwyzszyPunktIndex = 0;
+        for (int i = 1; i < n; i++) {
+            if (tablica[i] >= najwyzszyPunkt) {
+                najwyzszyPunktIndex = i;
+                najwyzszyPunkt = tablica[i];
+            }
         }
-        int[] bityiPotega = new int[2];
-        bityiPotega[0] = currPot + 1;
-        bityiPotega[1] = n;
-        return bityiPotega;
-    }
-    public static int zapalone(int liczba){
-        int[] bityiPotega = new int[2];
-        bityiPotega = ileBitow(liczba);
-        int zapalone = 0;
-        /*dodanie zapalonych z liczb mniejszych od najwiekszej potegi dwojki mniejszej od liczby*/
-        zapalone += (bityiPotega[0] - 1) * (bityiPotega[1] / 2);
-        /*zapalone w najwiekszej potedze dwojki mniejszej od liczby*/
-        zapalone++;
-        int dystans = liczba - bityiPotega[1];
-        /*zapalone w liczbach wiekszych od potegi*/
-        for (int i = 2; i <= bityiPotega[1]; i *= 2){
-            zapalone += (dystans / i) * dystans / 2 + Math.max((dystans % i) - (i / 2) + 1, 0);
+
+        int iloscwody = 0;
+
+        /*zliczamy wodę z lewej strony*/
+        int temphighest = tablica[0];
+        for (int i = 1; i < najwyzszyPunktIndex; i++) {
+            if (tablica[i] > temphighest) temphighest = tablica[i];
+            else iloscwody += temphighest - tablica[i];
         }
-        zapalone += dystans; //zapalone w najwiekszych bitach
-        return zapalone;
+
+        /*zliczamy wodę z prawej strony*/
+        temphighest = tablica[n-1];
+        for (int i = n-1; i > najwyzszyPunktIndex; i--) {
+            if (tablica[i] > temphighest) temphighest = tablica[i];
+            else iloscwody += temphighest - tablica[i];
+        }
+
+        return iloscwody;
     }
     public static void main(String[] args) {
-        Scanner s = new Scanner(System.in);
-        int liczba = s.nextInt();
-        int zapalone = zapalone(liczba);
-        System.out.println(zapalone);
-
+        int dlugosc;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ile elementów w tablicy:");
+        dlugosc = sc.nextInt();
+        int [] dane = new int[dlugosc];
+        System.out.println("Tablica:");
+        for (int i = 0; i < dlugosc; i++) {
+            dane[i] = sc.nextInt();
+        }
+        int woda = rozwiazanie(dane);
+        System.out.println("Wody jest " + woda);
     }
 }
